@@ -1,21 +1,26 @@
 from rest_framework import serializers
-from .models import Cart, CartItem, OrderPlaced
+from .models import User, Item, Cart, Order
 
-class CartItemSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CartItem
-        fields = ['id', 'product_name', 'quantity', 'price']
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'email', 'password', 'flag']
+
+class ItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = ['id', 'category', 'name']
 
 class CartSerializer(serializers.ModelSerializer):
-    items = CartItemSerializer(many=True, read_only=True)
+    items = ItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = Cart
-        fields = ['id', 'created_at', 'items']
+        fields = ['id', 'owner', 'items']
 
-class OrderPlacedSerializer(serializers.ModelSerializer):
-    items = CartItemSerializer(many=True, read_only=True)
+class OrderSerializer(serializers.ModelSerializer):
+    items = ItemSerializer(many=True, read_only=True)
 
     class Meta:
-        model = OrderPlaced
-        fields = ['id', 'user', 'items', 'total_amount', 'placed_at']
+        model = Order
+        fields = ['id', 'user', 'items']
