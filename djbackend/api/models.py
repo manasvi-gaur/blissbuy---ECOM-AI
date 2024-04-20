@@ -9,7 +9,9 @@ class User(AbstractUser):
     last_name = models.CharField("Last name", max_length=30)
     email = models.EmailField("Email address")
     password = models.CharField(max_length=30)
-    flag = models.CharField(max_length=20, blank=True, null=True)
+    flag_choice = {"Inactive": 0, "New": 1, "Regular": 2, "Premium": 3}
+    flag = models.CharField(choices=flag_choice, default="New", max_length=10)
+    purchase_history = models.IntegerField(default=0)
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name', 'password']
 
     def __str__(self):
@@ -17,8 +19,29 @@ class User(AbstractUser):
     
 class Item(models.Model):
     id = models.UUIDField(editable=False, primary_key=True, null=False, blank=False, default=uuid.uuid4)
-    catagory = models.CharField(max_length=30)
+    cat_choice = {'Electronics':0, 'Home Appliances':1, 'Clothing':2, 'Health & Beauty':3, "Books": 4}
+    cat = models.CharField(max_length=30, choices=cat_choice)
     name = models.CharField(max_length=256)
+    comp_price = models.IntegerField()
+    price = models.IntegerField()
+    seas_choice = {
+        "Low":0,
+        "Medium":1,
+        "High":2
+    }
+    seasonality = models.CharField(choices=seas_choice, max_length=10)
+    eco_ind = models.DecimalField(decimal_places=2, max_digits=20)
+    sent_choice = {
+        "Negative":-1,
+        "Neutral":0,
+        "Positive":1
+    }
+    sentiment = models.CharField(choices=sent_choice, default="Neutral", max_length=10)
+    DPS_choice = {'Dynamic Bundling': 0, 'Dynamic Markdowns': 1, 'Personalized Pricing': 2,'Discounting': 3}
+    Dyn_price_strat = models.CharField(choices=DPS_choice, default="Personalized Pricing", max_length=30)
+    revenue = models.IntegerField()
+    profitability = models.FloatField()
+    price_elas = models.FloatField()
 
 class Cart(models.Model):
     id = models.UUIDField(editable=False, primary_key=True, null=False, blank=False, default=uuid.uuid4)
